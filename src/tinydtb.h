@@ -1,5 +1,5 @@
-#ifndef __TINYDTS_H__
-#define __TINYDTS_H__
+#ifndef __TINYDTB_H__
+#define __TINYDTB_H__
 
 #ifndef __ASSEMBLER__
 
@@ -68,4 +68,4 @@ extern struct dt_block *dt_foreach_next_of(struct dt_foreach *fe, char *prefix);
 
 #endif /* ! __ASSEMBLER__ */
 
-#endif /* __TINYDTS_H__ */
+#endif /* __TINYDTB_H__ */

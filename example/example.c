@@ -1,15 +1,24 @@
 
+/*
+ * sample code for tinyDTB.
+ *
+ * To learn how to use the library, take a look at demo()
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
+#include <ctype.h>
 
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
 #include <fcntl.h>
 
-#include "tinydts.h"
+#include "tinydtb.h"
 
-void fatal(char *msg); /* forward reference */
+/* forward reference */
+void fatal(char *msg);
+void print_dtb(struct dt_context *dtb, struct dt_block *parent, int level);
 
 void demo(void *data, uint32_t size)
 {
@@ -17,7 +26,7 @@ void demo(void *data, uint32_t size)
    struct dt_block block, prop, *it;
    struct dt_foreach fe;
 
-   /* 1. initialize the DTB context from memory */
+   /* 0. initialize the DTB context from memory */
    if(!dt_init(&dtb, data, size))
         fatal("not a devicetree");
 
@@ -99,21 +108,63 @@ void demo(void *data, uint32_t size)
        printf(" foreach property %s -> data at %p, size = %d\n", it->name, it->data.ptr, it->data_len);
    }
 
-   #if 0
 
-/ {
-  prop1 = "stuff";
-  prop2 = <0x01234567 0xAABBCCDD>;
-  node1 {
-    prop3 = "more stuff";
-    node2  {
-      prop4 = <0x555>;
-    };
-  };
-};
-#endif
+   /* 4. print the whole DTB with a recusrive function */
+   printf("\nAnd the whole tree...\n");
+   print_dtb(&dtb, NULL, 0);
+}
 
+/* helper for the recursive printer */
+void indent(int level)
+{
+    int i;
+    for(i = 0; i < level; i++) printf("  ");
+}
 
+int is_string(struct dt_block *b)
+{
+    int i;
+    for(i = 0; i < b->data_len-1; i++)
+	if(!isprint(b->data.str[i]) && !isspace(b->data.str[i]))
+	    return 0;
+
+    return b->data.str[b->data_len-1] == '\0';
+}
+
+/* recursivly scan the DTB and print it */
+void print_dtb(struct dt_context *dtb, struct dt_block *parent, int level)
+{
+    int i;
+    struct dt_block *it;
+    struct dt_foreach fe;
+
+    indent(level);
+    if(parent)
+	printf("%s {\n", parent->name);
+    else
+	printf("{\n");
+
+    dt_foreach_init(dtb, parent, &fe, 0);
+    while( (it = dt_foreach_next(&fe))) {
+	indent(level+1);
+
+	if(is_string(it))
+	    printf("%s = \"%s\";\n", it->name, it->data.str);
+	else {
+	    printf("%s = < ", it->name);
+	    for(i = 0; 4 * i < it->data_len; i++)
+		printf("0x%08lX ", it->data.num[i]);
+	    printf(">;\n");
+	}
+    }
+
+    dt_foreach_init(dtb, parent, &fe, 1);
+    while( (it = dt_foreach_next(&fe))) {
+	print_dtb(dtb, it, level + 1);
+    }
+
+    indent(level);
+    printf("};\n");
 }
 
 

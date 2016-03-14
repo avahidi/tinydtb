@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "tinydts.h"
+#include "tinydtb.h"
 
 #define DEVICETREE_MAGIC 0xd00dfeed
 

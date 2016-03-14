@@ -1,7 +1,7 @@
 #
 
 CROSS_COMPILE ?=
-NAME ?= tinydts
+NAME ?= tinydtb
 DIR = src
 
 #
@@ -22,10 +22,9 @@ example: all
 	make -C example
 
 build/lib$(NAME).a: $(OBJ) Makefile
-	ls -l $(OBJ)
 	@echo AR $@
 	@$(CROSS_COMPILE)ar rcs $@ $(OBJ)
-	@$(CROSS_COMPILE)objdump -d $@ > $@.dis
+	@$(CROSS_COMPILE)objdump -dth $@ > $@.dis
 
 build/%.o: src/%.c Makefile build $(INC)
 	@echo GCC $<
