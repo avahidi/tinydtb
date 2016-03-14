@@ -26,9 +26,11 @@ void demo(void *data, uint32_t size)
    struct dt_block block, prop, *it;
    struct dt_foreach fe;
 
+
    /* 0. initialize the DTB context from memory */
    if(!dt_init(&dtb, data, size))
         fatal("not a devicetree");
+
 
 
    /* 1.A find a property in the root of the tree
@@ -44,6 +46,8 @@ void demo(void *data, uint32_t size)
 
    printf("prop1: data='%s', size %d\n", prop.data.str, prop.data_len);
 
+
+
    /* 1.B same thing, now with an integer.
     *    note that we need dtend() to convert from DTB endian to our endian format */
    if(!dt_block_find(&dtb, NULL, &prop, 0, "prop2", -1))
@@ -57,11 +61,15 @@ void demo(void *data, uint32_t size)
 	  dtend(prop.data.num[1]),
 	  prop.data_len);
 
+
+
    /* 2.A now, access /node1/prop3, which is a string */
    if(!dt_block_find(&dtb, NULL, &prop, 0, "/node1/prop3", -1))
        fatal("Could not find prop3");
 
    printf("prop3: data='%s', size %d\n", prop.data.str, prop.data_len);
+
+
 
    /* 2.A we can also first extract node1 and from that get prop3 */
    if(!dt_block_find(&dtb, NULL, &block, 1, "/node1", -1))
@@ -71,6 +79,8 @@ void demo(void *data, uint32_t size)
        fatal("Could not find prop3");
 
    printf("prop3: data='%s', size %d\n", prop.data.str, prop.data_len);
+
+
 
    /* 3.A we can also iterate over all data at a certain level
     *    this is useful if we don't know exactly what elements the DTB contains.
@@ -83,12 +93,16 @@ void demo(void *data, uint32_t size)
        printf(" foreach block %s -> data at %p, size = %d\n", it->name, it->data.ptr, it->data_len);
    }
 
+
+
    /* 3.B, same thing with properties in / */
    dt_foreach_init(&dtb, NULL, &fe, 0);
    printf("FOREACH property in /:\n");
    while( (it = dt_foreach_next(&fe))) {
        printf(" foreach block %s -> data at %p, size = %d\n", it->name, it->data.ptr, it->data_len);
    }
+
+
 
    /* 3.C You don't have to be in root: */
    if(!dt_block_find(&dtb, NULL, &block, 1, "/node1/node2", -1))
@@ -101,12 +115,14 @@ void demo(void *data, uint32_t size)
    }
 
 
+
    /* 3.D  you can also iterate over specifc prefixez: */
    dt_foreach_init(&dtb, NULL, &fe, 1);
    printf("FOREACH data@xxx block in /:\n");
    while( (it = dt_foreach_next_of(&fe, "data@"))) {
        printf(" foreach property %s -> data at %p, size = %d\n", it->name, it->data.ptr, it->data_len);
    }
+
 
 
    /* 4. print the whole DTB with a recusrive function */
@@ -144,10 +160,12 @@ void print_dtb(struct dt_context *dtb, struct dt_block *parent, int level)
     else
 	printf("{\n");
 
+    /* for each property, print it *...*/
     dt_foreach_init(dtb, parent, &fe, 0);
     while( (it = dt_foreach_next(&fe))) {
 	indent(level+1);
 
+	/* for this ugly hack we only have strings and []integer */
 	if(is_string(it))
 	    printf("%s = \"%s\";\n", it->name, it->data.str);
 	else {
@@ -158,6 +176,7 @@ void print_dtb(struct dt_context *dtb, struct dt_block *parent, int level)
 	}
     }
 
+    /* for each block, recursivly call this function... */
     dt_foreach_init(dtb, parent, &fe, 1);
     while( (it = dt_foreach_next(&fe))) {
 	print_dtb(dtb, it, level + 1);
@@ -168,8 +187,10 @@ void print_dtb(struct dt_context *dtb, struct dt_block *parent, int level)
 }
 
 
+
 /* This code will do load the DTB from file into memory.
- * In an embedded system, we would probably use the DTB as-is from flash
+ * In an embedded system, we would probably use the DTB as-is
+ * from flash...
  */
 void load_dtb(char *filename, void **adr, uint32_t *size)
 {
