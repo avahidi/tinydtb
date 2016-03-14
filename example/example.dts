@@ -1,0 +1,24 @@
+//-*- dts-*-
+
+/dts-v1/;
+
+/ {
+  prop1 = "stuff";
+  prop2 = <0x01234567 0xAABBCCDD>;
+  node1 {
+    prop3 = "more stuff";
+    node2  {
+      prop4 = <0x555>;
+    };
+  };
+
+  data@0 {
+    desc = "this is data@0";
+  };
+  data@1 {
+    desc = "this is data@1";
+  };
+  data@2 {
+    desc = "this is data@2";
+  };
+};
