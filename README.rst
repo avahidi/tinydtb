@@ -12,7 +12,7 @@ might find this library useful.
 
 Building
 --------
-The makefile accepts two optional parameters: CROSS_COMPILE, UFLAGS (added to the default CFLAGS)
+The makefile accepts two optional parameters: CROSS_COMPILE and UFLAGS (which is added to our CFLAGS)
 
 ::
 
@@ -27,7 +27,7 @@ Usage
 -----
 
 The *example/* folder contains sample code that demonstrates how to use the library.
-You can run the example be executing
+You can run the example by executing
 
 ::
 
