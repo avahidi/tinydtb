@@ -23,12 +23,8 @@ The makefile accepts two optional parameters: CROSS_COMPILE and UFLAGS (which is
    # build for ARMv8 with additional flags
    make CROSS_COMPILE=aarch64-linux-gnu- UFLAGS="-mcpu=cortex-a53"
 
-Usage
------
 
-The *example/* folder contains sample code that demonstrates how to use the library.
-You can run the example by executing
+Examples
+--------
 
-::
-
-   make example
+The *examples/* folder contains sample code that demonstrates how to use the library.

@@ -1,2 +1,0 @@
-
-sample code for tinyDTB

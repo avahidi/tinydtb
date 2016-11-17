@@ -15,11 +15,11 @@ CFLAGS += $(foreach d,$(DIR),-I $(d))
 CFLAGS += $(UFLAGS)
 
 #
-all: build/lib$(NAME).a
+all: build/lib$(NAME).a examples
 	ls -l build/lib$(NAME).a
 
-example: all
-	make -C example
+examples: build/lib$(NAME).a
+	make -C examples
 
 build/lib$(NAME).a: $(OBJ) Makefile
 	@echo AR $@
@@ -38,3 +38,4 @@ build:
 
 clean:
 	rm -rf build
+	make -C examples clean
