@@ -25,20 +25,28 @@ void fatal(char *msg)
 /*
  * is the data in this node a string?
  */
-bool data_is_string(struct dt_block *node)
+bool data_is_string(char *data, int len)
 {
-    int i, len;
-
-    /* check for EOS */
-    len = node->data_len - 1;
-    if(len <= 0 || node->data.str[len] != '\0')
-        return false;
+    int i;
 
     for(i = 0; i < len; i++)
-        if(!isprint(node->data.str[i]) )
+        if(!isprint(data[i]) && data[i] != '\0')
             return false;
 
     return true;
+}
+
+void data_dump_string(char *data, int len)
+{
+    bool first;
+    int n;
+
+    for(first = true; len > 0; first = false) {
+        n = strlen(data) + 1;
+        printf("%s\"%s\"", first ? "" : ",", data);
+        len -= n;
+        data += n;
+    }
 }
 
 /*
@@ -48,8 +56,8 @@ void dtb_dump_prop(char *parent, struct dt_block *node)
 {
     int i;
     printf("%s/%s = ", parent, node->name);
-    if(data_is_string(node)) {
-        printf("\"%s\"", node->data.str);
+    if(data_is_string(node->data.str, node->data_len)) {
+        data_dump_string(node->data.str, node->data_len);
     } else {
         for(i = 0; i < node->data_len / 4; i++)
             printf("%c0x%08x", i == 0 ? '<' : ',', node->data.num[i]);
