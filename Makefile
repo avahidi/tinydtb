@@ -19,7 +19,9 @@ all: build/lib$(NAME).a examples
 	ls -l build/lib$(NAME).a
 
 examples: build/lib$(NAME).a
+ifeq (,$(CROSS_COMPILE))
 	make -C examples
+endif
 
 build/lib$(NAME).a: $(OBJ) Makefile
 	@echo AR $@

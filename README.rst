@@ -1,7 +1,31 @@
 tinyDTB
 =======
 
-tinyDTB is a minimal library for reading flattened devicetrees (DTS) in binary form (DTB). It is very small in size and parses the binary "in-place", hence it also has a minimal memory footprint.
+tinyDTB is a minimal library for reading flattened device trees (DTS) in binary form (DTB).
+It is very small in size and parses the binary "in-place", hence it also has a minimal memory footprint.
+
+In case you have never seen a device tree, here is one before compilation::
+
+    /* stolen from Thomas Petazzoni's ELCE-12 presentation */
+    /dts-v1/;
+    /memreserve/ 0x0c000000 0x04000000;
+    /include/ "bcm2835.dtsi"
+    / {
+        compatible = "raspberrypi,model-b", "brcm,bcm2835";
+        model = "Raspberry Pi Model B";
+        memory {
+            reg = <0 0x10000000>;
+        };
+        soc {
+            uart@20201000 {
+                status = "okay";
+            };
+       };
+    };
+
+Which is transformed to a flat binary format using the device tree compiler *dtc*.
+The tinyDTB library contains the API needed to access that binary at runtime.
+
 
 When should I use this?
 -----------------------
@@ -9,6 +33,11 @@ When should I use this?
 If you are writing software for resource constrained devices, or for some other reason
 want to keep resource usage to a minimum (e.g. if you are writing a bootloader) you
 might find this library useful.
+
+
+The small size of the library (around 1K bytes on most architectures) allows you
+to add device tree functionality to your code without making it bloat,
+
 
 Building
 --------
