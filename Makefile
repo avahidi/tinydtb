@@ -2,19 +2,19 @@
 
 CROSS_COMPILE ?=
 NAME ?= tinydtb
-DIR = src
 
 #
-SRC = $(foreach d,$(DIR),$(wildcard $(d)/*.c))
-INC = $(foreach d,$(DIR),$(wildcard $(d)/*.h))
+SRC = $(wildcard src/*.c)
+INC = $(wildcard src/*.h)
 OBJ = $(patsubst src/%.c,build/%.o,$(SRC))
 
 CFLAGS += -nostdlib -ffreestanding
 CFLAGS += -Os -fno-common
-CFLAGS += $(foreach d,$(DIR),-I $(d))
+CFLAGS += -I src
 CFLAGS += $(UFLAGS)
 
 #
+
 all: build/lib$(NAME).a examples
 	ls -l build/lib$(NAME).a
 
@@ -22,6 +22,18 @@ examples: build/lib$(NAME).a
 ifeq (,$(CROSS_COMPILE))
 	make -C examples
 endif
+
+run: examples
+	make -C examples run
+
+.PHONY: fuzz
+fuzz:
+	cd fuzz && ./lxc.sh
+
+.PHONY: test
+test:
+	@echo "TODO :("
+
 
 build/lib$(NAME).a: $(OBJ) Makefile
 	@echo AR $@
@@ -32,7 +44,7 @@ build/%.o: src/%.c Makefile build $(INC)
 	@echo GCC $<
 	@$(CROSS_COMPILE)gcc $(CFLAGS) -c $< -o $@
 	@$(CROSS_COMPILE)objdump -d $@ > $@.dis
-
+	@$(CROSS_COMPILE)objdump -h $@
 #
 
 build:

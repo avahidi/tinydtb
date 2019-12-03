@@ -1,7 +1,7 @@
 tinyDTB
 =======
 
-tinyDTB is a minimal library for reading flattened device trees (DTS) in binary form (DTB).
+tinyDTB is a **minimal** library for reading flattened device trees (DTS) in binary form (DTB).
 It is very small in size and parses the binary "in-place", hence it also has a minimal memory footprint.
 
 In case you have never seen a device tree, here is one before compilation::
@@ -34,10 +34,7 @@ If you are writing software for resource constrained devices, or for some other 
 want to keep resource usage to a minimum (e.g. if you are writing a bootloader) you
 might find this library useful.
 
-
-The small size of the library (around 1K bytes on most architectures) allows you
-to add device tree functionality to your code without making it bloat,
-
+The library is very small, 1 - 2 K bytes depending on the architecture.
 
 Building
 --------
@@ -56,4 +53,18 @@ The makefile accepts two optional parameters: CROSS_COMPILE and UFLAGS (which is
 Examples
 --------
 
-The *examples/* folder contains sample code that demonstrates how to use the library.
+The *examples/* folder contains sample code that demonstrates how to use the library::
+
+   make examples         # build them
+   make run              # run them
+
+
+Fuzzing
+-------
+
+This project was just the right size for learning fuzzing with libFuzzer & clang,
+so we now have some minimal fuzz tests under the *fuzz/* folder :)
+::
+
+   make fuzz            # inside an LXC container, the "right" way
+   make -C fuzz fuzz    # native , the "unsupported" way

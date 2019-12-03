@@ -1,7 +1,5 @@
 
-This example provides a short intrudction to tinyDTB.
-
-It should teach you to
+This example provides a short introduction to tinyDTB. It should teach you to
 
 #. load a DTB file
 #. read a property from the DTB and access its data

@@ -1,11 +1,9 @@
 
-
-
 BASE = ../..
-BUILD= $(BASE)/build
 NAME = dtbdump
 
-DTB = $(BASE)/build/example.dtb
+BUILD= $(BASE)/build
+DTB = $(BASE)/data/example.dtb
 
 all: $(BUILD)/$(NAME).exe
 

@@ -136,12 +136,12 @@ void indent(int level)
     for(i = 0; i < level; i++) printf("  ");
 }
 
-int is_string(struct dt_block *b)
+bool is_string(struct dt_block *b)
 {
     int i;
     for(i = 0; i < b->data_len-1; i++)
         if(!isprint(b->data.str[i]) && !isspace(b->data.str[i]))
-            return 0;
+            return false;
 
     return b->data.str[b->data_len-1] == '\0';
 }
@@ -187,9 +187,9 @@ void print_dtb(struct dt_context *dtb, struct dt_block *parent, int level)
 
 
 
-/* This code will do load the DTB from file into memory.
- * In an embedded system, we would probably use the DTB as-is
- * from flash...
+/* This code will load a DTB from file into memory.
+ * In an embedded system, we would probably just use a
+ * memory mapped area in ROM or flash.
  */
 void load_dtb(char *filename, void **adr, uint32_t *size)
 {

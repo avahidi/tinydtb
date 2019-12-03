@@ -4,6 +4,7 @@
 #ifndef __ASSEMBLER__
 
 #include <stdint.h>
+#include <stdbool.h>
 
 /* byte-order:
  * 1. little-endian, which is probably your native endian
@@ -55,8 +56,8 @@ struct dt_foreach {
 };
 
 
-extern int dt_init(struct dt_context *ctx, void *start, uint32_t size);
-extern int dt_block_find(struct dt_context *ctx, struct dt_block *block,
+extern bool dt_init(struct dt_context *ctx, void *start, uint32_t size);
+extern bool dt_block_find(struct dt_context *ctx, struct dt_block *block,
                          struct dt_block *result, int asnode,
                          char *name, int len);
 extern void dt_foreach_init(struct dt_context *ctx,

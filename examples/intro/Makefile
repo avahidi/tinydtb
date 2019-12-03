@@ -1,7 +1,7 @@
 
 BASE = ../..
 BUILD= $(BASE)/build
-DTB = $(BASE)/build/example.dtb
+DTB = $(BASE)/data/example.dtb
 
 all: $(BUILD)/intro.exe
 
