@@ -52,10 +52,10 @@ void demo(void *data, uint32_t size)
     if(!dt_block_find(&dtb, NULL, &prop, 0, "prop2", -1))
         fatal("Could not find prop2");
 
-    printf("prop2: data=%08lx %08lx, size %d (native endian)\n",
+    printf("prop2: data=%08x %08x, size %d (native endian)\n",
            prop.data.num[0], prop.data.num[1], prop.data_len);
 
-    printf("prop2: data=%08lx %08lx, size %d (corrected endian)\n",
+    printf("prop2: data=%08x %08x, size %d (corrected endian)\n",
            dtend(prop.data.num[0]),
            dtend(prop.data.num[1]),
            prop.data_len);
@@ -170,7 +170,7 @@ void print_dtb(struct dt_context *dtb, struct dt_block *parent, int level)
         else {
             printf("%s = < ", it->name);
             for(i = 0; 4 * i < it->data_len; i++)
-                printf("0x%08lX ", it->data.num[i]);
+                printf("0x%08X ", it->data.num[i]);
             printf(">;\n");
         }
     }

@@ -1,7 +1,7 @@
 #
 
 CROSS_COMPILE ?=
-NAME ?= tinydtb
+NAME = tinydtb
 
 #
 SRC = $(wildcard src/*.c)
