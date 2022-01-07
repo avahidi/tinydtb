@@ -34,8 +34,9 @@ If you are writing software for resource constrained devices, or for some other 
 want to keep resource usage to a minimum (e.g. if you are writing a bootloader) you
 might find this library useful.
 
-The library is very small, 1 - 2 K bytes depending on the architecture. This is on AMD64:
+The library is very small, 1 - 2 K bytes depending on the architecture. This is on AMD64
 
+::
 
     $ objdump -h build/libtinydtb.a
     In archive build/libtinydtb.a:
@@ -52,8 +53,7 @@ The library is very small, 1 - 2 K bytes depending on the architecture. This is 
                       ALLOC
       3 .rodata       00000024  0000000000000000  0000000000000000  00000504  2**2
                       CONTENTS, ALLOC, LOAD, RELOC, READONLY, DATA
-      ....
-      
+      ...
 
 Building
 --------
