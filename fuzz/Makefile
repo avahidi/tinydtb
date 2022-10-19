@@ -31,10 +31,7 @@ $(DTB_DIR)/%.dtb: $(DTS_DIR)/%.dts
 
 # setup the system with the required repos and tools
 setup: $(WORKDIR) $(CORPUS_DIR)
-	#sudo apt install -y --no-install-recommends clang
-	git clone https://github.com/google/fuzzing $(WORKDIR)/fuzzing
-	cd $(WORKDIR) && fuzzing/tutorial/libFuzzer/install-deps.sh  # Get deps
-	cd $(WORKDIR) && fuzzing/tutorial/libFuzzer/install-clang.sh # Get fresh clang binaries
+	sudo apt install -y --no-install-recommends clang
 	cp ../data/*.dtb $(CORPUS_DIR)
 	
 $(WORKDIR):
@@ -54,6 +51,6 @@ cleanall:
 
 $(WORKDIR)/dt_init.log: src/dt_init.c
 	clang -g -fsanitize=address,fuzzer $(CFLAGS) $(TARGET_C) $< -o $(WORKDIR)/dt_init.exe
-	cd $(WORKDIR) && ./dt_init.exe $(CORPUS_DIR) 2> $@ || echo DONE
+	cd $(WORKDIR) && ./dt_init.exe -max_total_time=300 $(CORPUS_DIR) 2> $@ || echo DONE
 	cat $@
 
