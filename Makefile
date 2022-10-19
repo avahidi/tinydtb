@@ -11,7 +11,6 @@ OBJ = $(patsubst src/%.c,build/%.o,$(SRC))
 CFLAGS += -nostdlib -ffreestanding
 CFLAGS += -Os -fno-common
 CFLAGS += -I src
-CFLAGS += $(UFLAGS)
 
 #
 

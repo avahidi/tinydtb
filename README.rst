@@ -1,30 +1,8 @@
 tinyDTB
 =======
 
-tinyDTB is a **minimal** library for reading flattened device trees (DTS) in binary form (DTB).
+tinyDTB is a **minimal** library for reading flattened `device trees (DTS) <https://en.wikipedia.org/wiki/Devicetree>`_ in binary form (DTB). 
 It is very small in size and parses the binary "in-place", hence it also has a minimal memory footprint.
-
-In case you have never seen a device tree, here is one before compilation::
-
-    /* stolen from Thomas Petazzoni's ELCE-12 presentation */
-    /dts-v1/;
-    /memreserve/ 0x0c000000 0x04000000;
-    /include/ "bcm2835.dtsi"
-    / {
-        compatible = "raspberrypi,model-b", "brcm,bcm2835";
-        model = "Raspberry Pi Model B";
-        memory {
-            reg = <0 0x10000000>;
-        };
-        soc {
-            uart@20201000 {
-                status = "okay";
-            };
-       };
-    };
-
-Which is transformed to a flat binary format using the device tree compiler *dtc*.
-The tinyDTB library contains the API needed to access that binary at runtime.
 
 
 When should I use this?
@@ -66,16 +44,46 @@ The makefile accepts two optional parameters: CROSS_COMPILE and UFLAGS (which is
    # build for ARMv7
    make CROSS_COMPILE=arm-none-eabi-
    # build for ARMv8 with additional flags
-   make CROSS_COMPILE=aarch64-linux-gnu- UFLAGS="-mcpu=cortex-a53"
+   make CROSS_COMPILE=aarch64-linux-gnu- CFLAGS="-mcpu=cortex-a53"
 
 
-Examples
+Usage
 --------
 
-The *examples/* folder contains sample code that demonstrates how to use the library::
+Assume a DTB of size *size* is available at address *adr*. The following will load it into the library
 
-   make examples         # build them
-   make run              # run them
+::
+
+    #include "tinydtb.h"
+    ...    
+    struct dt_context dtb;
+    dt_init(&dtb, adr, size);
+    
+
+To search for an item in the DTB, use dt_block_find
+
+::
+
+    struct dt_block block prop;
+    if(dt_block_find(&dtb, NULL /* parent */, &prop, 0 /* find prop */, "prop1", -1))
+        printf("prop1: data='%s', size %d\n", prop.data.str, prop.data_len);
+
+
+You can also iterate over items at certain level in the tree
+
+::
+
+    /* print all items in / */
+    struct dt_block block *it;
+    struct dt_foreach fe;
+
+    dt_foreach_init(&dtb, NULL /* from root */, &fe, 1);
+    while( (it = dt_foreach_next(&fe))) {
+        printf(" foreach block %s -> data at %p, size = %d\n", it->name, it->data.ptr, it->data_len);
+    }
+
+
+For more examples, refer to the *examples/* folder. 
 
 
 Fuzzing
@@ -83,7 +91,15 @@ Fuzzing
 
 This project was just the right size for learning fuzzing with libFuzzer & clang,
 so we now have some minimal fuzz tests under the *fuzz/* folder :)
+
+To run the fuzzer inside an LXC container
 ::
 
-   make fuzz            # inside an LXC container, the "right" way
-   make -C fuzz fuzz    # native , the "unsupported" way
+    # setup everything and run fuzzer inside an LXC container
+    make fuzz
+
+To instead run it naively
+::
+
+   make -C fuzz setup
+   make -C fuzz fuzz
