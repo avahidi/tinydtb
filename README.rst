@@ -35,14 +35,16 @@ The library is very small, 1 - 2 K bytes depending on the architecture. This is 
 
 Building
 --------
-The makefile accepts two optional parameters: CROSS_COMPILE and UFLAGS (which is added to our CFLAGS)
+The makefile accepts CROSS_COMPILE
 
 ::
 
    # native build
    make
+
    # build for ARMv7
    make CROSS_COMPILE=arm-none-eabi-
+   
    # build for ARMv8 with additional flags
    make CROSS_COMPILE=aarch64-linux-gnu- CFLAGS="-mcpu=cortex-a53"
 
