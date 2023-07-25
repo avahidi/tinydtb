@@ -52,26 +52,39 @@ The makefile accepts CROSS_COMPILE
 Usage
 --------
 
-Assume a DTB of size *size* is available at address *adr*. The following will load it into the library
+With the binary device tree is already in memory, the library is initialized as follows:
 
 ::
 
     #include "tinydtb.h"
     ...    
+
+    /* adr and size refer to location and length of the DTB in memory */
     struct dt_context dtb;
     dt_init(&dtb, adr, size);
     
 
-To search for an item in the DTB, use dt_block_find
+The function *dt_block_find* is used to find nodes or properties in the DTB:
 
 ::
 
+
     struct dt_block block prop;
+
+    /*
+     * The parameters are as follows:
+     *  dtb is the previously loaded DTB
+     *  We start from root, hence parent is NULL. This can also be another node
+     *  prop is where the result is stored
+     *  the next parameter indicates if we are iterating over nodes (1) or properties (0)
+     *  "prop1" is the name of the node, and can also be a path such as node1/node2/prop1
+     *  the last number is the length of the name, -1 means the entire string
+     */
     if(dt_block_find(&dtb, NULL /* parent */, &prop, 0 /* find prop */, "prop1", -1))
         printf("prop1: data='%s', size %d\n", prop.data.str, prop.data_len);
 
 
-You can also iterate over items at certain level in the tree
+You can iterate over nodes/properties anywhere in the tree
 
 ::
 
@@ -79,6 +92,13 @@ You can also iterate over items at certain level in the tree
     struct dt_block block *it;
     struct dt_foreach fe;
 
+    /*
+     * The parameters are as follows:
+     *  dtb is the previously loaded DTB
+     *  We start from root, hence parent is NULL.
+     *  fe is the resulting iterator
+     *  the last parameter indicates if we are iterating over nodes (1) or properties (0)
+     */
     dt_foreach_init(&dtb, NULL /* from root */, &fe, 1);
     while( (it = dt_foreach_next(&fe))) {
         printf(" foreach block %s -> data at %p, size = %d\n", it->name, it->data.ptr, it->data_len);
